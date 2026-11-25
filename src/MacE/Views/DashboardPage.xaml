@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MacE.ViewModels"
+             x:Class="MacE.Views.DashboardPage"
+             x:DataType="vm:DashboardViewModel"
+             Title="{Binding Title}">
+
+    <ScrollView Padding="24">
+        <VerticalStackLayout Spacing="24" MaximumWidthRequest="800" HorizontalOptions="Center">
+
+            <!-- App Title Banner -->
+            <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
+                <Label Text="MAC-E"
+                       FontSize="36"
+                       FontAttributes="Bold"
+                       TextColor="{StaticResource Primary}"
+                       HorizontalOptions="Center" />
+                <Label Text="Device-Bound Document Security"
+                       FontSize="15"
+                       Opacity="0.7"
+                       HorizontalOptions="Center" />
+            </VerticalStackLayout>
+
+            <!-- Device Status Card -->
+            <Border Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                    StrokeShape="RoundRectangle 12"
+                    Padding="20"
+                    BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource Gray900}}">
+                <VerticalStackLayout Spacing="10">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="💻 THIS DEVICE IDENTITY"
+                               FontSize="13"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource Primary}"
+                               Grid.Column="0" />
+                        <Border BackgroundColor="{Binding IsDeviceEnrolled, Converter={StaticResource BoolToColorConverter}, ConverterParameter='Primary'}"
+                                StrokeShape="RoundRectangle 6"
+                                Padding="8,3"
+                                Grid.Column="1">
+                            <Label Text="{Binding IsDeviceEnrolled, Converter={StaticResource StringToBoolConverter}}"
+                                   FontSize="11"
+                                   FontAttributes="Bold"
+                                   TextColor="White">
+                                <Label.Text>
+                                    <Binding Path="IsDeviceEnrolled" StringFormat="{}{0}" />
+                                </Label.Text>
+                            </Label>
+                        </Border>
+                    </Grid>
+
+                    <Label Text="{Binding CurrentDeviceName}"
+                           FontSize="22"
+                           FontAttributes="Bold" />
+
+                    <Label FontSize="13" Opacity="0.7">
+                        <Label.Text>
+                            <MultiBinding StringFormat="{}Registered Devices: {0} | Status: Device-Bound Security Active">
+                                <Binding Path="RegisteredDeviceCount" />
+                            </MultiBinding>
+                        </Label.Text>
+                    </Label>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Quick Action Cards -->
+            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="14">
+                <!-- Encrypt Action -->
+                <Border Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                        StrokeShape="RoundRectangle 10"
+                        Padding="16"
+                        BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#1F2937}"
+                        Grid.Column="0">
+                    <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
+                        <Label Text="🔒" FontSize="32" HorizontalOptions="Center" />
+                        <Label Text="Encrypt" FontSize="16" FontAttributes="Bold" HorizontalOptions="Center" />
+                        <Label Text="Protect a file for selected devices" FontSize="12" Opacity="0.6" HorizontalTextAlignment="Center" />
+                        <Button Text="Start Encrypt"
+                                Command="{Binding GoToEncryptCommand}"
+                                HeightRequest="38"
+                                BackgroundColor="{StaticResource Primary}"
+                                TextColor="White"
+                                FontSize="12"
+                                FontAttributes="Bold" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Decrypt Action -->
+                <Border Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                        StrokeShape="RoundRectangle 10"
+                        Padding="16"
+                        BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#1F2937}"
+                        Grid.Column="1">
+                    <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
+                        <Label Text="🔓" FontSize="32" HorizontalOptions="Center" />
+                        <Label Text="Decrypt" FontSize="16" FontAttributes="Bold" HorizontalOptions="Center" />
+                        <Label Text="Access an authorized .mace file" FontSize="12" Opacity="0.6" HorizontalTextAlignment="Center" />
+                        <Button Text="Open File"
+                                Command="{Binding GoToDecryptCommand}"
+                                HeightRequest="38"
+                                BackgroundColor="#10B981"
+                                TextColor="White"
+                                FontSize="12"
+                                FontAttributes="Bold" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Manage Devices -->
+                <Border Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                        StrokeShape="RoundRectangle 10"
+                        Padding="16"
+                        BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#1F2937}"
+                        Grid.Column="2">
+                    <VerticalStackLayout Spacing="10" HorizontalOptions="Center">
+                        <Label Text="🔑" FontSize="32" HorizontalOptions="Center" />
+                        <Label Text="Devices" FontSize="16" FontAttributes="Bold" HorizontalOptions="Center" />
+                        <Label Text="Manage device keys and identity" FontSize="12" Opacity="0.6" HorizontalTextAlignment="Center" />
+                        <Button Text="Manage"
+                                Command="{Binding GoToDevicesCommand}"
+                                HeightRequest="38"
+                                BackgroundColor="{AppThemeBinding Light=#4B5563, Dark=#374151}"
+                                TextColor="White"
+                                FontSize="12"
+                                FontAttributes="Bold" />
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

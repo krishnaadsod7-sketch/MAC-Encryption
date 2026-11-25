@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MacE.ViewModels"
+             x:Class="MacE.Views.DecryptPage"
+             x:DataType="vm:DecryptViewModel"
+             Title="{Binding Title}">
+
+    <ScrollView Padding="24">
+        <VerticalStackLayout Spacing="20" MaximumWidthRequest="800" HorizontalOptions="Center">
+
+            <Label Text="Decrypt &amp; Access File"
+                   FontSize="26"
+                   FontAttributes="Bold" />
+
+            <Label Text="Verify your device identity and unlock the protected file."
+                   FontSize="14"
+                   Opacity="0.7" />
+
+            <!-- File Selection Card -->
+            <Border Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                    StrokeShape="RoundRectangle 10"
+                    Padding="18"
+                    BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource Gray900}}">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Select Protected Document (.mace)"
+                           FontSize="16"
+                           FontAttributes="Bold" />
+
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                        <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
+                            <Label Text="{Binding SelectedFileName}"
+                                   FontSize="15"
+                                   FontAttributes="Bold" />
+                            <Label Text="{Binding SelectedFilePath}"
+                                   FontSize="12"
+                                   Opacity="0.6"
+                                   LineBreakMode="MiddleTruncation" />
+                            <Label Text="{Binding FileMetadataSummary}"
+                                   FontSize="12"
+                                   TextColor="{StaticResource Primary}"
+                                   FontAttributes="Bold"
+                                   Margin="0,4,0,0" />
+                        </VerticalStackLayout>
+
+                        <Button Text="📁 Browse..."
+                                Command="{Binding SelectFileCommand}"
+                                HeightRequest="40"
+                                BackgroundColor="{AppThemeBinding Light=#4B5563, Dark=#374151}"
+                                TextColor="White"
+                                FontAttributes="Bold"
+                                Grid.Column="1" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Decrypt Action Button (hidden once decrypted) -->
+            <Button Text="🔓 Decrypt and Open Document"
+                    Command="{Binding DecryptCommand}"
+                    IsEnabled="{Binding CanDecrypt}"
+                    IsVisible="{Binding IsDecrypted, Converter={StaticResource InvertedBoolConverter}}"
+                    BackgroundColor="#10B981"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    HeightRequest="50"
+                    FontSize="16"
+                    CornerRadius="10" />
+
+            <!-- Edit & Save Panel (shown after successful decryption) -->
+            <Border IsVisible="{Binding IsDecrypted}"
+                    Stroke="#10B981"
+                    StrokeShape="RoundRectangle 10"
+                    StrokeThickness="2"
+                    Padding="20"
+                    BackgroundColor="{AppThemeBinding Light=#F0FDF4, Dark=#052e16}">
+                <VerticalStackLayout Spacing="14">
+
+                    <HorizontalStackLayout Spacing="10">
+                        <Label Text="✏️"
+                               FontSize="22"
+                               VerticalOptions="Center" />
+                        <VerticalStackLayout>
+                            <Label Text="File is open for editing"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   TextColor="#10B981" />
+                            <Label Text="{Binding DecryptedFileName}"
+                                   FontSize="13"
+                                   Opacity="0.75" />
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
+
+                    <Label Text="Edit the file in its application, then return here to save your changes back as an encrypted file."
+                           FontSize="13"
+                           Opacity="0.75" />
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                        <!-- Save Encrypted -->
+                        <Button Grid.Column="0"
+                                Text="💾 Save Encrypted"
+                                Command="{Binding SaveEncryptedCommand}"
+                                BackgroundColor="#10B981"
+                                TextColor="White"
+                                FontAttributes="Bold"
+                                HeightRequest="46"
+                                CornerRadius="8" />
+
+                        <!-- Discard -->
+                        <Button Grid.Column="1"
+                                Text="🗑 Discard Changes"
+                                Command="{Binding DiscardChangesCommand}"
+                                BackgroundColor="{AppThemeBinding Light=#6B7280, Dark=#374151}"
+                                TextColor="White"
+                                FontAttributes="Bold"
+                                HeightRequest="46"
+                                CornerRadius="8" />
+                    </Grid>
+
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Status Banner -->
+            <Label Text="{Binding StatusMessage}"
+                   FontSize="14"
+                   FontAttributes="Bold"
+                   TextColor="{Binding IsError, Converter={StaticResource BoolToColorConverter}}"
+                   IsVisible="{Binding StatusMessage, Converter={StaticResource StringToBoolConverter}}"
+                   HorizontalOptions="Center" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

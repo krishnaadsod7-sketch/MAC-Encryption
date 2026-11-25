@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MacE.ViewModels"
+             x:Class="MacE.Views.SettingsPage"
+             x:DataType="vm:SettingsViewModel"
+             Title="{Binding Title}">
+
+    <ScrollView Padding="24">
+        <VerticalStackLayout Spacing="20" MaximumWidthRequest="750" HorizontalOptions="Center">
+
+            <!-- Page Title -->
+            <Label Text="Settings"
+                   FontSize="26"
+                   FontAttributes="Bold" />
+
+            <!-- Appearance & Theme Preferences -->
+            <Border Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                    StrokeShape="RoundRectangle 10"
+                    Padding="20"
+                    BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource Gray900}}">
+                <VerticalStackLayout Spacing="14">
+                    <Label Text="🎨 Appearance &amp; Theme"
+                           FontSize="18"
+                           FontAttributes="Bold" />
+                    <Label Text="Choose your preferred visual theme or match your Windows system setting."
+                           FontSize="13"
+                           Opacity="0.7" />
+
+                    <!-- Theme Toggle Buttons -->
+                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12" Margin="0,8,0,0">
+                        <!-- System Default Option -->
+                        <Button Text="🌓 System Default"
+                                Command="{Binding SetThemeCommand}"
+                                CommandParameter="System"
+                                HeightRequest="45"
+                                CornerRadius="8"
+                                FontSize="13"
+                                FontAttributes="Bold"
+                                BackgroundColor="{Binding IsThemeSystem, Converter={StaticResource BoolToColorConverter}, ConverterParameter='Primary'}"
+                                TextColor="White"
+                                Grid.Column="0" />
+
+                        <!-- Light Option -->
+                        <Button Text="☀️ Light Mode"
+                                Command="{Binding SetThemeCommand}"
+                                CommandParameter="Light"
+                                HeightRequest="45"
+                                CornerRadius="8"
+                                FontSize="13"
+                                FontAttributes="Bold"
+                                BackgroundColor="{Binding IsThemeLight, Converter={StaticResource BoolToColorConverter}, ConverterParameter='Primary'}"
+                                TextColor="White"
+                                Grid.Column="1" />
+
+                        <!-- Dark Option -->
+                        <Button Text="🌙 Dark Mode"
+                                Command="{Binding SetThemeCommand}"
+                                CommandParameter="Dark"
+                                HeightRequest="45"
+                                CornerRadius="8"
+                                FontSize="13"
+                                FontAttributes="Bold"
+                                BackgroundColor="{Binding IsThemeDark, Converter={StaticResource BoolToColorConverter}, ConverterParameter='Primary'}"
+                                TextColor="White"
+                                Grid.Column="2" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Security Notice Box (Adaptive Color with High Contrast) -->
+            <Border Stroke="{AppThemeBinding Light=#D97706, Dark=#B45309}"
+                    StrokeThickness="1.5"
+                    StrokeShape="RoundRectangle 10"
+                    Padding="18"
+                    BackgroundColor="{AppThemeBinding Light=#FFFBEB, Dark=#271F0C}">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="⚠️ Security Notice &amp; Trust Model"
+                           FontSize="16"
+                           FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=#92400E, Dark=#FBBF24}" />
+                    <Label Text="MAC-E protects files using device-bound encryption. Only authorized registered devices possessing the matching secure device key can decrypt the protected files. MAC-E does not prevent runtime memory inspection, screenshots, or extraction by local OS administrators."
+                           FontSize="13"
+                           LineHeight="1.3"
+                           TextColor="{AppThemeBinding Light=#78350F, Dark=#FDE68A}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Application Information Card -->
+            <Border Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                    StrokeShape="RoundRectangle 10"
+                    Padding="20"
+                    BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource Gray900}}">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="ℹ️ Application Information"
+                           FontSize="18"
+                           FontAttributes="Bold" />
+
+                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto"
+                          ColumnSpacing="16" RowSpacing="8" Margin="0,4,0,0">
+                        <Label Text="Version:"
+                               FontSize="14"
+                               Opacity="0.6"
+                               Grid.Row="0" Grid.Column="0" />
+                        <Label Text="{Binding AppVersion}"
+                               FontSize="14"
+                               FontAttributes="Bold"
+                               Grid.Row="0" Grid.Column="1" />
+
+                        <Label Text="Build:"
+                               FontSize="14"
+                               Opacity="0.6"
+                               Grid.Row="1" Grid.Column="0" />
+                        <Label Text="{Binding BuildInfo}"
+                               FontSize="14"
+                               Grid.Row="1" Grid.Column="1" />
+
+                        <Label Text="Security Level:"
+                               FontSize="14"
+                               Opacity="0.6"
+                               Grid.Row="2" Grid.Column="0" />
+                        <Label Text="{Binding SecurityLevel}"
+                               FontSize="14"
+                               Grid.Row="2" Grid.Column="1" />
+
+                        <Label Text="Device Status:"
+                               FontSize="14"
+                               Opacity="0.6"
+                               Grid.Row="3" Grid.Column="0" />
+                        <Label Text="{Binding CurrentDeviceStatus}"
+                               FontSize="14"
+                               Grid.Row="3" Grid.Column="1" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

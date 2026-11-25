@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MacE.ViewModels"
+             xmlns:models="clr-namespace:MacE.Models"
+             x:Class="MacE.Views.ProtectedFilesPage"
+             x:DataType="vm:ProtectedFilesViewModel"
+             Title="{Binding Title}">
+
+    <ScrollView Padding="20">
+        <VerticalStackLayout Spacing="16">
+
+            <Label Text="Protected Files"
+                   FontSize="24"
+                   FontAttributes="Bold" />
+
+            <Label Text="Files encrypted and managed by MAC-E."
+                   FontSize="14"
+                   Opacity="0.7" />
+
+            <CollectionView ItemsSource="{Binding Files}"
+                            SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:ProtectedFileInfo">
+                        <Border Stroke="{StaticResource Gray200}"
+                                StrokeShape="RoundRectangle 8"
+                                Padding="12"
+                                Margin="0,4">
+                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                                <Label Text="📄"
+                                       FontSize="28"
+                                       VerticalOptions="Center"
+                                       Grid.Column="0" />
+                                <VerticalStackLayout Grid.Column="1"
+                                                     VerticalOptions="Center">
+                                    <Label Text="{Binding OriginalFileName}"
+                                           FontAttributes="Bold"
+                                           FontSize="14" />
+                                    <Label FontSize="12"
+                                           Opacity="0.6">
+                                        <Label.Text>
+                                            <MultiBinding StringFormat="{}Devices: {0} · Created: {1:yyyy-MM-dd}">
+                                                <Binding Path="AuthorizedDeviceCount" />
+                                                <Binding Path="CreatedAtUtc" />
+                                            </MultiBinding>
+                                        </Label.Text>
+                                    </Label>
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout HorizontalOptions="Center"
+                                         Margin="0,40">
+                        <Label Text="No protected files yet."
+                               FontSize="16"
+                               Opacity="0.5"
+                               HorizontalOptions="Center" />
+                        <Label Text="Encrypt a file from the Encrypt page."
+                               FontSize="14"
+                               Opacity="0.4"
+                               HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+            </CollectionView>
+
+            <!-- Status Message -->
+            <Label Text="{Binding StatusMessage}"
+                   FontSize="14"
+                   HorizontalOptions="Center" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

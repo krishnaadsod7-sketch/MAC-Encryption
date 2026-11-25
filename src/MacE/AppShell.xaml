@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="MacE.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:MacE.Views"
+    Title="MAC-E"
+    FlyoutBehavior="Flyout">
+
+    <!--
+        Shell navigation with Flyout (sidebar on Windows, hamburger menu on Android).
+        Each ShellContent represents one page in the navigation.
+        The ContentTemplate uses DataTemplate for lazy page creation.
+    -->
+
+    <FlyoutItem Title="Dashboard" Icon="{x:Null}">
+        <ShellContent
+            Title="Dashboard"
+            ContentTemplate="{DataTemplate views:DashboardPage}"
+            Route="DashboardPage" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Encrypt" Icon="{x:Null}">
+        <ShellContent
+            Title="Encrypt"
+            ContentTemplate="{DataTemplate views:EncryptPage}"
+            Route="EncryptPage" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Decrypt" Icon="{x:Null}">
+        <ShellContent
+            Title="Decrypt"
+            ContentTemplate="{DataTemplate views:DecryptPage}"
+            Route="DecryptPage" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Devices" Icon="{x:Null}">
+        <ShellContent
+            Title="Devices"
+            ContentTemplate="{DataTemplate views:DevicesPage}"
+            Route="DevicesPage" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Protected Files" Icon="{x:Null}">
+        <ShellContent
+            Title="Protected Files"
+            ContentTemplate="{DataTemplate views:ProtectedFilesPage}"
+            Route="ProtectedFilesPage" />
+    </FlyoutItem>
+
+    <FlyoutItem Title="Settings" Icon="{x:Null}">
+        <ShellContent
+            Title="Settings"
+            ContentTemplate="{DataTemplate views:SettingsPage}"
+            Route="SettingsPage" />
+    </FlyoutItem>
+
+</Shell>

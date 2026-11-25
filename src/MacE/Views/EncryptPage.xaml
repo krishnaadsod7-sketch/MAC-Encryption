@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MacE.ViewModels"
+             xmlns:models="clr-namespace:MacE.Models"
+             x:Class="MacE.Views.EncryptPage"
+             x:DataType="vm:EncryptViewModel"
+             Title="{Binding Title}">
+
+    <ScrollView Padding="24">
+        <VerticalStackLayout Spacing="20" MaximumWidthRequest="800" HorizontalOptions="Center">
+
+            <Label Text="Encrypt Document"
+                   FontSize="26"
+                   FontAttributes="Bold" />
+
+            <Label Text="Bind file encryption to authorized devices. Only selected devices with valid keys can decrypt."
+                   FontSize="14"
+                   Opacity="0.7" />
+
+            <!-- Step 1: Select File -->
+            <Border Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                    StrokeShape="RoundRectangle 10"
+                    Padding="18"
+                    BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource Gray900}}">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Step 1: Choose Document"
+                           FontSize="16"
+                           FontAttributes="Bold" />
+
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                        <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
+                            <Label Text="{Binding SelectedFileName}"
+                                   FontSize="15"
+                                   FontAttributes="Bold" />
+                            <Label Text="{Binding SelectedFilePath}"
+                                   FontSize="12"
+                                   Opacity="0.6"
+                                   LineBreakMode="MiddleTruncation" />
+                            <Label Text="{Binding SelectedFileSizeText}"
+                                   FontSize="11"
+                                   Opacity="0.5" />
+                        </VerticalStackLayout>
+
+                        <Button Text="📁 Browse..."
+                                Command="{Binding SelectFileCommand}"
+                                HeightRequest="40"
+                                BackgroundColor="{AppThemeBinding Light=#4B5563, Dark=#374151}"
+                                TextColor="White"
+                                FontAttributes="Bold"
+                                Grid.Column="1" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Step 2: Authorize Devices -->
+            <Border Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                    StrokeShape="RoundRectangle 10"
+                    Padding="18"
+                    BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource Gray900}}">
+                <VerticalStackLayout Spacing="12">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="Step 2: Select Authorized Devices"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               Grid.Column="0" />
+                        <Label Text="{Binding SelectedDeviceCountText}"
+                               FontSize="12"
+                               TextColor="{StaticResource Primary}"
+                               FontAttributes="Bold"
+                               VerticalOptions="Center"
+                               Grid.Column="1" />
+                    </Grid>
+
+                    <Label Text="Click on any registered device to toggle access authorization."
+                           FontSize="12"
+                           Opacity="0.6" />
+
+                    <CollectionView ItemsSource="{Binding AvailableDevices}"
+                                    SelectionMode="None">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="vm:SelectableDeviceViewModel">
+                                <Border Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                                        StrokeShape="RoundRectangle 8"
+                                        Padding="12"
+                                        Margin="0,3"
+                                        BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#1F2937}">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EncryptViewModel}}, Path=ToggleDeviceCommand}"
+                                                              CommandParameter="{Binding .}" />
+                                    </Border.GestureRecognizers>
+
+                                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                                        <Label Text="💻" FontSize="24" VerticalOptions="Center" Grid.Column="0" />
+
+                                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                            <HorizontalStackLayout Spacing="8">
+                                                <Label Text="{Binding Device.DisplayName}"
+                                                       FontAttributes="Bold"
+                                                       FontSize="15" />
+                                                <Label Text="(This Device)"
+                                                       FontSize="11"
+                                                       TextColor="{StaticResource Primary}"
+                                                       IsVisible="{Binding Device.IsCurrentDevice}" />
+                                            </HorizontalStackLayout>
+                                            <Label Text="{Binding Device.DeviceId, StringFormat='ID: {0}'}"
+                                                   FontSize="11"
+                                                   FontFamily="Consolas"
+                                                   Opacity="0.6" />
+                                        </VerticalStackLayout>
+
+                                        <Button Text="Toggle"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:EncryptViewModel}}, Path=ToggleDeviceCommand}"
+                                                CommandParameter="{Binding .}"
+                                                HeightRequest="34"
+                                                FontSize="11"
+                                                Grid.Column="2">
+                                            <Button.Triggers>
+                                                <DataTrigger TargetType="Button" Binding="{Binding IsSelected}" Value="True">
+                                                    <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+                                                    <Setter Property="TextColor" Value="White" />
+                                                </DataTrigger>
+                                                <DataTrigger TargetType="Button" Binding="{Binding IsSelected}" Value="False">
+                                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}" />
+                                                    <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray100}}" />
+                                                </DataTrigger>
+                                            </Button.Triggers>
+                                        </Button>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                        <CollectionView.EmptyView>
+                            <VerticalStackLayout HorizontalOptions="Center" Margin="0,20">
+                                <Label Text="No registered devices found. Go to Devices tab to enroll."
+                                       FontSize="13"
+                                       Opacity="0.6"
+                                       HorizontalOptions="Center" />
+                            </VerticalStackLayout>
+                        </CollectionView.EmptyView>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Step 3: Encrypt Button -->
+            <Button Text="🔒 Encrypt and Save .mace File"
+                    Command="{Binding EncryptCommand}"
+                    IsEnabled="{Binding CanEncrypt}"
+                    BackgroundColor="{StaticResource Primary}"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    HeightRequest="50"
+                    FontSize="16"
+                    CornerRadius="10" />
+
+            <!-- Status Banner -->
+            <Label Text="{Binding StatusMessage}"
+                   FontSize="14"
+                   FontAttributes="Bold"
+                   TextColor="{Binding IsError, Converter={StaticResource BoolToColorConverter}}"
+                   IsVisible="{Binding StatusMessage, Converter={StaticResource StringToBoolConverter}}"
+                   HorizontalOptions="Center" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

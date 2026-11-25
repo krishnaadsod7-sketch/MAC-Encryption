@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MacE.ViewModels"
+             xmlns:models="clr-namespace:MacE.Models"
+             x:Class="MacE.Views.DevicesPage"
+             x:DataType="vm:DevicesViewModel"
+             Title="{Binding Title}">
+
+    <ScrollView Padding="24">
+        <VerticalStackLayout Spacing="20" MaximumWidthRequest="800" HorizontalOptions="Center">
+
+            <Label Text="Registered Devices"
+                   FontSize="26"
+                   FontAttributes="Bold" />
+
+            <!-- Device Enrollment Card (Shown when this device is not yet enrolled) -->
+            <Border Stroke="{StaticResource Primary}"
+                    StrokeThickness="1.5"
+                    StrokeShape="RoundRectangle 10"
+                    Padding="20"
+                    BackgroundColor="{AppThemeBinding Light=#EEF2FF, Dark=#1E1B4B}"
+                    IsVisible="{Binding IsCurrentDeviceEnrolled, Converter={StaticResource InvertedBoolConverter}}">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="🔐 Register This Device"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource Primary}" />
+                    <Label Text="Register this device to protect and open files. MAC-E creates a secure cryptographic identity bound to this computer."
+                           FontSize="13"
+                           Opacity="0.8" />
+
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12" Margin="0,8,0,0">
+                        <Entry Placeholder="Enter device name (e.g. Work PC, Krishna's Laptop)"
+                               Text="{Binding NewDeviceName}"
+                               HeightRequest="45"
+                               Grid.Column="0" />
+                        <Button Text="Register Device"
+                                Command="{Binding EnrollDeviceCommand}"
+                                HeightRequest="45"
+                                BackgroundColor="{StaticResource Primary}"
+                                TextColor="White"
+                                FontAttributes="Bold"
+                                Grid.Column="1" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Actions Bar: Export Identity / Import Peer Device -->
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                <Button Text="📤 Export Device Key File (.mace-device)"
+                        Command="{Binding ExportCurrentDeviceCommand}"
+                        IsEnabled="{Binding IsCurrentDeviceEnrolled}"
+                        BackgroundColor="{AppThemeBinding Light=#4B5563, Dark=#374151}"
+                        TextColor="White"
+                        HeightRequest="42"
+                        FontSize="13"
+                        FontAttributes="Bold"
+                        Grid.Column="0" />
+
+                <Button Text="📥 Import Other Device (.mace-device)"
+                        Command="{Binding ImportPeerDeviceCommand}"
+                        BackgroundColor="{AppThemeBinding Light=#2563EB, Dark=#1D4ED8}"
+                        TextColor="White"
+                        HeightRequest="42"
+                        FontSize="13"
+                        FontAttributes="Bold"
+                        Grid.Column="1" />
+            </Grid>
+
+            <!-- Devices List Card -->
+            <Border Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                    StrokeShape="RoundRectangle 10"
+                    Padding="16"
+                    BackgroundColor="{AppThemeBinding Light=White, Dark={StaticResource Gray900}}">
+                <VerticalStackLayout Spacing="14">
+                    <Label Text="Authorized Devices"
+                           FontSize="18"
+                           FontAttributes="Bold" />
+
+                    <CollectionView ItemsSource="{Binding Devices}"
+                                    SelectionMode="None">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate x:DataType="models:DeviceIdentity">
+                                <Border Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+                                        StrokeShape="RoundRectangle 8"
+                                        Padding="14"
+                                        Margin="0,4"
+                                        BackgroundColor="{AppThemeBinding Light=#F9FAFB, Dark=#1F2937}">
+                                    <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="14">
+                                        <Label Text="💻"
+                                               FontSize="28"
+                                               VerticalOptions="Center"
+                                               Grid.Column="0" />
+
+                                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="3">
+                                            <HorizontalStackLayout Spacing="8">
+                                                <Label Text="{Binding DisplayName}"
+                                                       FontAttributes="Bold"
+                                                       FontSize="16" />
+                                                <Border BackgroundColor="#10B981"
+                                                        StrokeShape="RoundRectangle 4"
+                                                        Padding="6,2"
+                                                        IsVisible="{Binding IsCurrentDevice}">
+                                                    <Label Text="THIS DEVICE"
+                                                           FontSize="10"
+                                                           FontAttributes="Bold"
+                                                           TextColor="White" />
+                                                </Border>
+                                            </HorizontalStackLayout>
+
+                                            <Label Text="{Binding DeviceId, StringFormat='ID: {0}'}"
+                                                   FontSize="12"
+                                                   FontFamily="Consolas"
+                                                   Opacity="0.7" />
+
+                                            <Label FontSize="12" Opacity="0.6">
+                                                <Label.Text>
+                                                    <MultiBinding StringFormat="{}{0} · {1} · Registered {2:yyyy-MM-dd}">
+                                                        <Binding Path="Platform" />
+                                                        <Binding Path="MachineName" />
+                                                        <Binding Path="EnrolledAt" />
+                                                    </MultiBinding>
+                                                </Label.Text>
+                                            </Label>
+                                        </VerticalStackLayout>
+
+                                        <Button Text="Remove"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:DevicesViewModel}}, Path=RemoveDeviceCommand}"
+                                                CommandParameter="{Binding .}"
+                                                BackgroundColor="#EF4444"
+                                                TextColor="White"
+                                                FontSize="12"
+                                                HeightRequest="36"
+                                                VerticalOptions="Center"
+                                                Grid.Column="2" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                        <CollectionView.EmptyView>
+                            <VerticalStackLayout HorizontalOptions="Center" Margin="0,30" Spacing="6">
+                                <Label Text="No devices registered yet"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       Opacity="0.6"
+                                       HorizontalOptions="Center" />
+                                <Label Text="Register this device above or import another device's .mace-device file."
+                                       FontSize="13"
+                                       Opacity="0.5"
+                                       HorizontalOptions="Center" />
+                            </VerticalStackLayout>
+                        </CollectionView.EmptyView>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Status Banner -->
+            <Label Text="{Binding StatusMessage}"
+                   FontSize="14"
+                   FontAttributes="Bold"
+                   TextColor="{Binding IsError, Converter={StaticResource BoolToColorConverter}}"
+                   IsVisible="{Binding StatusMessage, Converter={StaticResource StringToBoolConverter}}"
+                   HorizontalOptions="Center" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
