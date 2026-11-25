@@ -127,6 +127,7 @@ It is not presented as a production-ready security product.
 ## 8. Project Status
 
 This project has been declared completed.
+it will still have bugs specially in android version.
 
 ## 9. Author
 
